@@ -20,6 +20,7 @@ namespace BoxField
 
         List<Cube> cubesLeft = new List<Cube>();
         List<Cube> cubesRight = new List<Cube>();
+
         int leftStartX = 300;
         int gap = 300;
         
@@ -39,6 +40,8 @@ namespace BoxField
         int xChange = 7;
 
         Random rand = new Random();
+
+        Character ch = new Character(500, 400, 30, 4);
 
         public GameScreen()
         {
@@ -198,8 +201,51 @@ namespace BoxField
                 cubesLeft.RemoveAt(0);
                 cubesRight.RemoveAt(0);
             }
-            
+
             #endregion
+
+            #region Character Move
+
+            if(leftArrowDown)
+            {
+                ch.move(ch, "left");
+            }
+            else if(rightArrowDown)
+            {
+                ch.move(ch, "right");
+            }
+
+            #endregion
+
+            foreach (Cube c in cubesLeft)
+            {
+                if (ch.collision(ch, c))
+                {
+                    gameLoop.Stop();
+
+                    Form f = this.FindForm();
+                    f.Controls.Remove(this);
+                    GameOver go = new GameOver();
+                    f.Controls.Add(go);
+
+                    break;
+                }
+            }
+
+            foreach (Cube c in cubesRight)
+            {
+                if (ch.collision(ch, c))
+                {
+                    gameLoop.Stop();
+
+                    Form f = this.FindForm();
+                    f.Controls.Remove(this);
+                    GameOver go = new GameOver();
+                    f.Controls.Add(go);            
+                    
+                    break;
+                }
+            }
 
             Refresh();
         }
@@ -217,8 +263,8 @@ namespace BoxField
                 e.Graphics.DrawRectangle(cubePen, c.x, c.y, c.size, c.size);
                 e.Graphics.FillRectangle(colors[c.colour], c.x, c.y, c.size, c.size);
             }
+
+            e.Graphics.DrawEllipse(cubePen, ch.x, ch.y, ch.size, ch.size);
         }
-
-
     }
 }
